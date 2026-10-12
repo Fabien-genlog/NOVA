@@ -18,6 +18,7 @@ from werkzeug.security import (
 from PIL import Image, UnidentifiedImageError
 
 
+
 # ==================================================
 # 1. FANOMANANA NY APPLICATION NOVA
 # ==================================================
@@ -25,7 +26,10 @@ from PIL import Image, UnidentifiedImageError
 app = Flask(__name__)
 
 app.config.update(
-    SECRET_KEY=os.environ.get("NOVA_SECRET_KEY"),
+    SECRET_KEY=os.environ.get(
+        "NOVA_SECRET_KEY",
+        "nova-dev-key-change-this-before-production"
+    ),
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax",
     SESSION_COOKIE_SECURE=(
@@ -35,18 +39,7 @@ app.config.update(
     MAX_CONTENT_LENGTH=5 * 1024 * 1024,
 )
 
-app.secret_key = os.environ.get(
-    "NOVA_SECRET_KEY",
-    "nova-dev-key-change-this-before-production"
-)
-
 csrf = CSRFProtect(app)
-
-app.secret_key = os.environ.get(
-    "NOVA_SECRET_KEY", secrets.token_hex(32)
-)
-
-app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "nova.db")
